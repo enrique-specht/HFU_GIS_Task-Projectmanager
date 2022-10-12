@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
@@ -12,9 +12,58 @@
 </head>
 
 <body>
-    <div class="main">
+    <header>
+        <nav>
+            <a class="nav-item" href="/tasks.html">Tasks</a>
+            <a class="nav-item" href="/index.html">Projects</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Manage your projects:</h1>
+        <button><p>Create a new project</p></button>
+        <div href="/project.html">
+            <div>
+                <p>"Projectname"</p>
+            </div>
+            <div>
+                <p>"Projectdescription</p>
+            </div>
+        </div>
 
-    </div>
+        <div>
+            <div>
+                <h2>Create a new project</h2>
+            </div>
+            <div>
+                <form>
+                    <label>Title</label><br>
+                    <input type="text" maxlength="30" required><br>
+                    <label>Description</label><br>
+                    <input type="text"><br>
+                    <button><p>Save</p></button>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <div>
+                <h2>Edit your project</h2>
+            </div>
+            <div>
+                <form>
+                    <label>Title</label><br>
+                    <input type="text" maxlength="30" required><br>
+                    <label>Description</label><br>
+                    <input type="text"><br>
+                    <button><p>Save</p></button>
+                    <button><svg alt="Delete" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M19 24h-14c-1.104 0-2-.896-2-2v-16h18v16c0 1.104-.896 2-2 2m-9-14c0-.552-.448-1-1-1s-1 .448-1 1v9c0 .552.448 1 1 1s1-.448 1-1v-9zm6 0c0-.552-.448-1-1-1s-1 .448-1 1v9c0 .552.448 1 1 1s1-.448 1-1v-9zm6-5h-20v-2h6v-1.5c0-.827.673-1.5 1.5-1.5h5c.825 0 1.5.671 1.5 1.5v1.5h6v2zm-12-2h4v-1h-4v1z"/></svg></button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>by Enrique Specht</p>
+    </footer>
 </body>
 
 </html>
