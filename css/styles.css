@@ -38,6 +38,10 @@ body {
 
 header {
     background-color: var(--primary-color);
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 main {
@@ -85,7 +89,7 @@ nav {
 }
 
 .nav-item:hover {
-    border-bottom: var(--nav-font-color) solid 1px;
+    border-bottom: var(--nav-font-color) solid 0.1rem;
 }
 
 .create-new {
@@ -100,11 +104,11 @@ nav {
     padding: 0 2em;
     box-shadow: 0 0.2em 0.2em var(--shadow-color);
     white-space: nowrap;
-    transition: transform 0.25s ease;
+    cursor: pointer;
 }
 
 .create-new:hover, .form-button:hover {
-    transform: scale(0.99);
+    animation: push 1s ease;
 }
 
 .manage-text {
@@ -131,11 +135,6 @@ nav {
     box-shadow: 0 0.2em 0.2em var(--shadow-color);
     margin: 1em;
     position: relative;
-    transition: transform 0.25s ease;
-}
-
-.div-project:hover {
-    transform: scale(0.995);
 }
 
 .div-projectname, .div-task-status {
@@ -167,8 +166,13 @@ nav {
     border: none;
     background-color: var(--secondary-color);
 }
+
 .project-edit-button svg {
     filter: invert();
+}
+
+.project-edit-button:hover {
+    animation: push 1s ease;
 }
 
 .div-projectdescription, .div-tasklist {
@@ -204,9 +208,14 @@ nav {
     box-shadow: 0 0.1em 0.1em var(--shadow-color);
 }
 
+.task-item:hover {
+    animation: push 1s ease;
+}
+
 .task-content {
     width: 90%;
     margin: 1rem;
+    cursor: grab;
 }
 
 .task-text {
@@ -227,6 +236,7 @@ nav {
     justify-content: center;
     background-color: var(--secondary-color);
     border-radius: 0 0.3rem 0.3rem 0;
+    cursor: pointer;
 }
 
 .task-edit-div svg {
@@ -282,6 +292,7 @@ nav {
     margin: 0.5rem 0;
     font-size: 1em;
     font-family: inherit;
+    cursor: pointer;
 }
 
 .form-item, #project-description {
@@ -292,7 +303,8 @@ nav {
 .form-item {
     width: 40vw;
     min-width: 15rem;
-    border: var(--border-color) 0.1rem solid; 
+    border: var(--border-color) 0.1rem solid;
+    transition: border 0.4s ease;
 }
 
 .form-item:hover {
@@ -335,7 +347,7 @@ nav {
 }
 
 .form-button-delete:hover {
-    transform: translateY(0.3rem) scale(0.98);
+    animation: push-delete-button 1s ease;
 }
 
 .form-button-delete svg {
@@ -357,6 +369,11 @@ nav {
 
 .form-duedate-check {
     float: left;
+    cursor: pointer;
+}
+
+.form-duedate-check:checked {
+    accent-color: var(--secondary-font-color);
 }
 
 .form-duedate-text {
@@ -379,9 +396,66 @@ nav {
         min-width: fit-content;
     }
     .create-new:hover {
-        transform: translateX(-50%) scale(0.99);
+        animation: push-create-button-mobile 1s ease;
     }
     .div-projectlist {
         margin-top: 3rem;
     }
 }
+
+@keyframes push {
+    from {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.99);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes push-delete-button {
+    from {
+        transform: translateY(0.3rem);
+    }
+    50% {
+        transform: translateY(0.3rem) scale(0.98);
+    }
+    to {
+        transform: translateY(0.3rem);
+    }
+}
+
+@keyframes push-create-button-mobile {
+    from {
+        transform: translateX(-50%);
+    }
+    50% {
+        transform: translateX(-50%) scale(0.99);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+/* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color) var(--background-gradient);
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: var(--background-gradient);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+  }
