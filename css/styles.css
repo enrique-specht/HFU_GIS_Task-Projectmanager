@@ -195,16 +195,13 @@ nav {
 
 .div-projectdescription {
     height: 60%;
+    color: var(--secondary-font-color);
+    margin: 1em;
+    word-break: break-all;
 }
 
 .div-projectdescription::-webkit-scrollbar, .div-tasklist::-webkit-scrollbar {
     display: none; /* Hide scrollbar for Chrome, Safari and Opera */
-}
-
-.div-projectdescription p {
-    color: var(--secondary-font-color);
-    margin: 1em;
-    word-break: break-all;
 }
 
 .div-tasklist {

@@ -1,0 +1,75 @@
+function createProjectPopup() {
+    if (document.getElementById("popup-create") != null) {
+        return;
+    }
+    let popup_create = document.getElementById("create-project-template").content.cloneNode(true).children[0];
+    document.getElementById("main").appendChild(popup_create);
+}
+
+function createOrEditProject() {
+    let projectlist = document.getElementById("projectlist");
+    if (document.querySelector("[edit]") == null) {
+        var project = document.getElementById("project-template").content.cloneNode(true).children[0];
+    } else {
+        var project = document.querySelector("[edit]").closest("div.div-project");
+    }
+    let project_title = document.getElementById("project-title").value;
+    let project_description = document.getElementById("project-description").value;
+
+    if(project_title == "") {
+        return;
+    }
+
+    project.children[0].children[1].textContent = project_title;
+    project.children[1].textContent = project_description;
+
+    projectlist.appendChild(project);
+
+    if (document.querySelector("[edit]") == null) {
+        document.getElementById("popup-create").remove();
+    } else {
+        document.getElementById("popup-edit").remove();
+        project.children[0].children[0].removeAttribute("edit");
+    }
+}
+
+function editProjectPopup(editproject) {
+    if (document.getElementById("popup-edit") != null) {
+        return;
+    }
+    let popup_edit = document.getElementById("edit-project-template").content.cloneNode(true).children[0];
+    document.getElementById("main").appendChild(popup_edit);
+    
+    editproject.setAttribute("edit","");
+
+    let project_title = editproject.parentNode.children[1].textContent;
+    let project_description = editproject.parentNode.parentNode.children[1].textContent;
+    document.getElementById("project-title").value = project_title;
+    document.getElementById("project-description").value = project_description;
+}
+
+//Close popup when clicked elsewhere
+document.addEventListener("click", function(event){
+    let popup_create = document.getElementById("popup-create");
+    let button_create = document.getElementById("create-new");
+    if (popup_create != null && button_create != null) {
+        if (!popup_create.contains(event.target) && !button_create.contains(event.target)) {
+            popup_create.remove();    
+        }    
+    }
+    let popup_edit = document.getElementById("popup-edit");
+    let button_edit = document.querySelector("[edit]");
+    if (popup_edit != null && button_edit != null) {
+        if (!popup_edit.contains(event.target) && !button_edit.contains(event.target)) {
+            popup_edit.remove();
+            button_edit.removeAttribute("edit");
+        }
+    }
+});
+
+function deleteProject() {
+    let popup_edit = document.getElementById("popup-edit");
+    let project = document.querySelector("[edit]").closest("div.div-project");
+    project.remove();
+    popup_edit.remove();
+}
