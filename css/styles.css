@@ -92,6 +92,10 @@ nav {
     border-bottom: var(--nav-font-color) solid 0.1rem;
 }
 
+.nav-item-current {
+    border-bottom: var(--nav-font-color) solid 0.1rem;
+}
+
 .create-new {
     position: absolute;
     right: 1rem;
