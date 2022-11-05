@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="css/styles.css" />
     <script src="js/headerFooter.js" defer></script>
     <script src="js/script.js" defer></script>
+    <!-- Drag and Drop HTML5 workaround on mobile -->
+    <script src="js/DragDropTouch.js" defer></script>
 </head>
 
 <body>
@@ -25,9 +27,9 @@
                     <h2>Backlog</h2>
                 </div>
                 <div class="div-tasklist">
-                    <div class="task-item">
+                    <div class="task-item" draggable="true">
                         <div class="task-content">
-                            <p class="task-text">"Task"</p>
+                            <p class="task-text">Drop zwischen Divs</p>
                             <p class="task-duedate">"01.01.23"</p>
                         </div>
                         <div class="task-edit-div" onclick="editTaskPopup(this)">
@@ -41,7 +43,7 @@
                     <h2>In Progress</h2>
                 </div>
                 <div class="div-tasklist">
-                    <div class="task-item">
+                    <div class="task-item" draggable="true">
                         <div class="task-content">
                             <p class="task-text">"Task"</p>
                             <p class="task-duedate">"01.01.23"</p>
@@ -57,7 +59,7 @@
                     <h2>Finished</h2>
                 </div>
                 <div class="div-tasklist">
-                    <div class="task-item">
+                    <div class="task-item" draggable="true">
                         <div class="task-content">
                             <p class="task-text">"Task"</p>
                             <p class="task-duedate">"01.01.23"</p>
@@ -108,7 +110,7 @@
         </template>
 
         <template id="task-template">
-            <div class="task-item">
+            <div class="task-item" draggable="true">
                 <div class="task-content">
                     <p class="task-text"></p>
                     <p class="task-duedate"></p>

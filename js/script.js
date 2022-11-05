@@ -135,6 +135,9 @@ function createOrEditTask() {
         document.getElementById("popup-edit").remove();
         task.children[1].removeAttribute("edit");
     }
+
+    task.addEventListener("dragstart", dragStart);
+    task.addEventListener("dragend", dragEnd);
 }
 
 function deleteTask() {
@@ -143,3 +146,39 @@ function deleteTask() {
     task.remove();
     popup_edit.remove();
 }
+
+//Drag and Drop Tasks
+let draggedTask = null;
+
+const tasks = document.querySelectorAll(".task-item");
+tasks.forEach((task) => {
+    task.addEventListener("dragstart", dragStart);
+    task.addEventListener("dragend", dragEnd);
+});
+function dragStart() {
+    draggedTask = this;
+    //console.log("dragStart");
+}
+function dragEnd() {
+    draggedTask = null;
+    //console.log("dragEnd");
+}
+
+const status_stages = document.querySelectorAll(".div-tasklist");
+status_stages.forEach((status) => {
+    status.addEventListener("dragover", function(e) {
+        e.preventDefault();
+        status.appendChild(draggedTask);
+        //console.log("dragOver");
+    });
+    status.addEventListener("dragenter", function() {
+        //console.log("dragEnter");
+    });
+    status.addEventListener("dragleave", function() {
+        //console.log("dragLeave");
+    });
+    status.addEventListener("drop", function() {
+        this.appendChild(draggedTask);
+        //console.log("dragDrop");
+    });
+});

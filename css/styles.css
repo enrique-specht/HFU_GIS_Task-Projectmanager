@@ -34,6 +34,7 @@ body {
     display: flex;
     flex-direction: column;
     scroll-behavior: smooth;
+    overflow-y: scroll;
 }
 
 header {
@@ -140,6 +141,7 @@ nav {
     margin: 1em;
     position: relative;
     cursor: pointer;
+    transition: height 0.5s ease;
 }
 
 .div-projectname, .div-task-status {
@@ -215,6 +217,8 @@ nav {
     border-radius: 0.3rem;
     height: fit-content;
     box-shadow: 0 0.1em 0.1em var(--shadow-color);
+    cursor: grab;
+    touch-action: none;
 }
 
 .task-item:hover {
@@ -224,7 +228,6 @@ nav {
 .task-content {
     width: 90%;
     margin: 1rem;
-    cursor: grab;
 }
 
 .task-text {
@@ -439,6 +442,9 @@ nav {
     }
     .div-projectlist {
         margin-top: 3rem;
+    }
+    .div-task-wrap {
+        height: 20rem;
     }
 }
 
