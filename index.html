@@ -16,7 +16,7 @@
     
     <main id="main">
         <h1 class="manage-text">Manage your projects:</h1>
-        <button type="button" id="create-new" class="create-new" onclick="createProjectPopup(this)">
+        <button type="button" id="create-new" class="create-new" onclick="createPopup()">
             <p>Create a new project</p>
         </button>
         <div id="projectlist" class="div-projectlist">
@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <template id="create-project-template">
+        <template id="popup-create-template">
             <div id="popup-create" class="popup">
                 <div class="popup-div-headline">
                     <h2 class="popup-headline">Create a new project</h2>
@@ -46,7 +46,7 @@
             </div>
         </template>
 
-        <template id="edit-project-template">
+        <template id="popup-edit-template">
             <div id="popup-edit" class="popup">
                 <div class="popup-div-headline">
                     <h2 class="popup-headline">Edit your project</h2>
