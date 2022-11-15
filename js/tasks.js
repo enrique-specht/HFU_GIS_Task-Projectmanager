@@ -65,14 +65,23 @@ function createOrEditTask() {
     task.children[0].children[0].textContent = task_title;
     task.children[0].children[1].textContent = task_duedate;
 
-    if (document.querySelector("[edit]") == null || document.querySelector("[edit]").closest("div.div-task-wrap").id == "backlog") {
+    if (document.querySelector("[edit]") == null) {
         backlog.appendChild(task);
-    }
-    else if (document.querySelector("[edit]").closest("div.div-task-wrap").id == "inProgress") {
-        inProgress.appendChild(task);
-    }
-    else if (document.querySelector("[edit]").closest("div.div-task-wrap").id == "finished") {
-        finished.appendChild(task);
+    } else {
+        let position_child = document.querySelector("[edit]").closest("div.task-item");
+        let position_parent = position_child.parentNode;
+        let position_index = Array.prototype.indexOf.call(position_parent.children, position_child);
+        let status_id = document.querySelector("[edit]").closest("div.div-task-wrap").id;
+
+        if (status_id == "backlog") {
+            backlog.insertBefore(task, position_parent.children[position_index]);
+        }
+        else if (status_id == "inProgress") {
+            inProgress.insertBefore(task, position_parent.children[position_index]);
+        }
+        else if (status_id == "finished") {
+            finished.insertBefore(task, position_parent.children[position_index]);
+        }
     }
 
     if (document.querySelector("[edit]") == null) {
@@ -126,7 +135,9 @@ const status_stages = document.querySelectorAll(".div-tasklist");
 status_stages.forEach((status) => {
     status.addEventListener("dragover", function(e) {
         e.preventDefault();
-        status.appendChild(draggedTask);
+        let task_index = Array.from(this.children).indexOf(event.target.closest("div.task-item"));
+        this.insertBefore(draggedTask, this.children[task_index]);
+        //this.appendChild(draggedTask);
         //console.log("dragOver");
     });
     status.addEventListener("dragenter", function() {
@@ -135,8 +146,10 @@ status_stages.forEach((status) => {
     status.addEventListener("dragleave", function() {
         //console.log("dragLeave");
     });
-    status.addEventListener("drop", function() {
-        this.appendChild(draggedTask);
+    status.addEventListener("drop", function(event) {
+        let task_index = Array.from(this.children).indexOf(event.target.closest("div.task-item"));
+        this.insertBefore(draggedTask, this.children[task_index]);
+        //this.appendChild(draggedTask);
         //console.log("dragDrop");
     });
 });
