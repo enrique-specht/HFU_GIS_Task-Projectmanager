@@ -15,4 +15,13 @@ document.addEventListener("click", function(event){
             button_edit.removeAttribute("edit");
         }
     }
+    blur();
 });
+
+function blur() {
+    if (document.getElementById("popup-create") || document.getElementById("popup-edit")) {
+        main.classList.add("blur");
+    } else {
+        main.classList.remove("blur");
+    }
+}

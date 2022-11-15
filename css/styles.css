@@ -257,6 +257,10 @@ nav {
     stroke-width: 2;
 }
 
+.blur > *:not(#popup-create,#popup-edit) {
+    filter: blur(0.08rem);
+}
+
 .popup {
     background-color: var(--primary-color);
     width: 50vw;
