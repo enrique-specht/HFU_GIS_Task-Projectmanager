@@ -16,6 +16,7 @@ for (i of edit) {
     i.addEventListener("click", editProjectPopup);
 }
 function editProjectPopup(event) {
+    event.stopPropagation();
     if (document.getElementById("popup-edit") != null) {
         return;
     }
@@ -79,4 +80,13 @@ function enableSubmitWithEnter() {
             }
           });
     }
+}
+
+let projects = document.getElementsByClassName("div-project");
+for (i of projects) {
+    i.addEventListener("click", function(e) {
+        e.stopPropagation();
+        let project_name = this.children[0].children[1].textContent;
+        window.location.href = ("/project.html?" + project_name);
+    });
 }
