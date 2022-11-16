@@ -77,6 +77,7 @@ function enableSubmitWithEnter() {
             if (event.key === "Enter") {
               event.preventDefault();
               createOrEditProject();
+              blur();
             }
           });
     }
