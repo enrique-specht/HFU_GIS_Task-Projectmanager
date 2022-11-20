@@ -1,3 +1,100 @@
+class Project {
+
+    constructor(title, description="") {
+        this.title = title;
+        this.description = description;
+        this.id = Math.random()*Date.now();
+  }
+}
+
+let projects = new Array();
+
+//for testing
+let projectExample = new Project("Beispiel", "Test");
+let projectExample2 = new Project("Beispiel2");
+projects.push(projectExample);
+projects.push(projectExample2);
+//
+
+document.onload = onload();
+function onload() {
+    renderLocalStorage();
+}
+
+function renderLocalStorage() {
+    //Todo: Load Local Storage
+    
+    projects.forEach((e) => {
+        renderProject(e);
+    })
+}
+
+function updateLocalStorage() {
+    //Todo: Set or update Local Storage
+}
+
+function createProject() {
+    let project_title = document.getElementById("project-title").value;
+    let project_description = document.getElementById("project-description").value;
+    
+    if (project_title == "") {
+        alert("Title can't be empty!");
+        return;
+    }
+    let project;
+    if (project_description == "") {
+        project = new Project(project_title);
+    } else {
+        project = new Project(project_title, project_description);
+    }
+
+    projects.push(project);
+    renderProject(project);
+    updateLocalStorage();
+}
+
+function editProject() {
+    let projectNodeId = document.querySelector("[edit]").closest("div.div-project").dataset.id;
+    let project = projects.find(x => x.id == projectNodeId);
+
+    let project_title = document.getElementById("project-title").value;
+    let project_description = document.getElementById("project-description").value;
+
+    project.title = project_title;
+    project.description = project_description;
+
+    renderProject(project);
+    updateLocalStorage();
+}
+
+function renderProject(project) {
+    let projectlist = document.getElementById("projectlist");
+    let edit = document.querySelector("[edit]");
+    let projectNode;
+    if (edit == null) {
+        projectNode = document.getElementById("project-template").content.cloneNode(true).children[0];
+        projectNode.getElementsByClassName("project-edit-button")[0].addEventListener("click", editProjectPopup);
+    } else {
+        projectNode = edit.closest("div.div-project");
+    }
+
+    projectNode.children[0].children[1].textContent = project.title;
+    projectNode.children[1].textContent = project.description;
+    projectNode.dataset.id = project.id;
+
+    projectlist.appendChild(projectNode);
+
+    let popup_create = document.getElementById("popup-create");
+    let popup_edit = document.getElementById("popup-edit");
+    if (popup_create) {
+        document.getElementById("popup-create").remove();
+    }
+    if (popup_edit){
+        document.getElementById("popup-edit").remove();
+        projectNode.children[0].children[0].removeAttribute("edit");
+    }
+}
+
 let create = document.getElementById("create-new");
 create.addEventListener("click", createProjectPopup)
 function createProjectPopup() {
@@ -7,14 +104,10 @@ function createProjectPopup() {
     let popup_create = document.getElementById("popup-create-template").content.cloneNode(true).children[0];
     document.getElementById("main").appendChild(popup_create);
 
-    document.getElementById("project-save").addEventListener("click", createOrEditProject);
+    document.getElementById("project-save").addEventListener("click", createProject);
     enableSubmitWithEnter();
 }
 
-let edit = document.getElementsByClassName("project-edit-button");
-for (i of edit) {
-    i.addEventListener("click", editProjectPopup);
-}
 function editProjectPopup(event) {
     event.stopPropagation();
     if (document.getElementById("popup-edit") != null) {
@@ -30,44 +123,23 @@ function editProjectPopup(event) {
     document.getElementById("project-title").value = project_title;
     document.getElementById("project-description").value = project_description;
 
-    document.getElementById("project-save").addEventListener("click", createOrEditProject);
+    document.getElementById("project-save").addEventListener("click", editProject);
     document.getElementById("project-delete").addEventListener("click", deleteProject);
     enableSubmitWithEnter();
 }
 
-function createOrEditProject() {
-    let projectlist = document.getElementById("projectlist");
-    if (document.querySelector("[edit]") == null) {
-        var project = document.getElementById("project-template").content.cloneNode(true).children[0];
-        project.getElementsByClassName("project-edit-button")[0].addEventListener("click", editProjectPopup);
-    } else {
-        var project = document.querySelector("[edit]").closest("div.div-project");
-    }
-    let project_title = document.getElementById("project-title").value;
-    let project_description = document.getElementById("project-description").value;
-
-    if(project_title == "") {
-        return;
-    }
-
-    project.children[0].children[1].textContent = project_title;
-    project.children[1].textContent = project_description;
-
-    projectlist.appendChild(project);
-
-    if (document.querySelector("[edit]") == null) {
-        document.getElementById("popup-create").remove();
-    } else {
-        document.getElementById("popup-edit").remove();
-        project.children[0].children[0].removeAttribute("edit");
-    }
-}
-
 function deleteProject() {
+    let projectNode = document.querySelector("[edit]").closest("div.div-project");
+    let projectNodeId = projectNode.dataset.id;
+    let project = projects.find(x => x.id == projectNodeId);
     let popup_edit = document.getElementById("popup-edit");
-    let project = document.querySelector("[edit]").closest("div.div-project");
-    project.remove();
+
+    projects.splice(projects.indexOf(project), 1);
+
+    projectNode.remove();
     popup_edit.remove();
+
+    updateLocalStorage();
 }
 
 function enableSubmitWithEnter() {
@@ -76,15 +148,19 @@ function enableSubmitWithEnter() {
         i.addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
               event.preventDefault();
-              createOrEditProject();
+              if(document.querySelector("[edit]") == null) {
+                createProject();
+            } else {
+                editProject();
+            } 
               blur();
             }
           });
     }
 }
 
-let projects = document.getElementsByClassName("div-project");
-for (i of projects) {
+let projectsNodes = document.getElementsByClassName("div-project");
+for (i of projectsNodes) {
     i.addEventListener("click", function(e) {
         e.stopPropagation();
         let project_name = this.children[0].children[1].textContent;
