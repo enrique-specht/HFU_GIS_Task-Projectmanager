@@ -10,10 +10,18 @@ class Project {
 let projects = new Array();
 
 //for testing
-let projectExample = new Project("Beispiel", "Test");
-let projectExample2 = new Project("Beispiel2");
-projects.push(projectExample);
-projects.push(projectExample2);
+const defaultProject = [
+    {
+        title: "Beispiel",
+        description: "Test",
+        id: 1
+    },
+    {
+        title: "Beispiel2",
+        description: "",
+        id: 2
+    },
+];
 //
 
 document.onload = onload();
@@ -22,7 +30,7 @@ function onload() {
 }
 
 function renderLocalStorage() {
-    //Todo: Load Local Storage
+    projects = JSON.parse(localStorage.getItem("projects")) || defaultProject;
     
     projects.forEach((e) => {
         renderProject(e);
@@ -30,7 +38,7 @@ function renderLocalStorage() {
 }
 
 function updateLocalStorage() {
-    //Todo: Set or update Local Storage
+    localStorage.setItem("projects", JSON.stringify(projects));
 }
 
 function createProject() {
@@ -161,9 +169,9 @@ function enableSubmitWithEnter() {
 
 let projectsNodes = document.getElementsByClassName("div-project");
 for (i of projectsNodes) {
+    let project_id = i.dataset.id;
     i.addEventListener("click", function(e) {
         e.stopPropagation();
-        let project_name = this.children[0].children[1].textContent;
-        window.location.href = ("/project.html?" + project_name);
+        window.location.href = ("/project.html?projectid=" + project_id);
     });
 }

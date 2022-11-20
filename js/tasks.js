@@ -11,14 +11,12 @@ class Task {
 let tasks = new Array();
 
 //for testing
-let taskExample = new Task("Beispiel", "2022-11-3");
-let taskExample2 = new Task("Beispiel2", "2022-11-3", "backlog");
-let taskExample3 = new Task("Beispiel3", "", "inProgress");
-let taskExample4 = new Task("Beispiel4", "2022-11-16", "finished");
-tasks.push(taskExample);
-tasks.push(taskExample2);
-tasks.push(taskExample3);
-tasks.push(taskExample4);
+const defaultTasks = [
+    new Task("Beispiel", "2022-11-3"),
+    new Task("Beispiel2", "2022-11-3", "backlog"),
+    new Task("Beispiel3", "", "inProgress"),
+    new Task("Beispiel4", "2022-11-16", "finished")
+];
 //
 
 document.onload = onload();
@@ -26,8 +24,15 @@ function onload() {
     renderLocalStorage();
 }
 
+function getProjectId() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get("projectid");
+    return projectId;
+}
+
 function renderLocalStorage() {
     //Todo: Load Local Storage
+    tasks = JSON.parse(localStorage.getItem("project"+getProjectId())) || defaultTasks;
     
     tasks.forEach((e) => {
         renderTask(e);
@@ -35,7 +40,7 @@ function renderLocalStorage() {
 }
 
 function updateLocalStorage() {
-    //Todo: Set or update Local Storage
+    localStorage.setItem("project" + getProjectId(), JSON.stringify(tasks));
 }
 
 function createTask() {
