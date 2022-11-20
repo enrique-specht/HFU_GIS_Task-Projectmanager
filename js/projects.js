@@ -37,8 +37,12 @@ function renderLocalStorage() {
     })
 }
 
-function updateLocalStorage() {
+function updateLocalStorage(id) {
     localStorage.setItem("projects", JSON.stringify(projects));
+
+    if(id) {
+        localStorage.removeItem("project"+id);
+    }
 }
 
 function createProject() {
@@ -90,7 +94,10 @@ function renderProject(project) {
     projectNode.children[1].textContent = project.description;
     projectNode.dataset.id = project.id;
 
-    projectlist.appendChild(projectNode);
+    projectNode.addEventListener("click", forwarding);
+
+    let position_index = projects.indexOf(project);
+    projectlist.insertBefore(projectNode, projectlist.children[position_index]);
 
     let popup_create = document.getElementById("popup-create");
     let popup_edit = document.getElementById("popup-edit");
@@ -147,7 +154,7 @@ function deleteProject() {
     projectNode.remove();
     popup_edit.remove();
 
-    updateLocalStorage();
+    updateLocalStorage(projectNodeId);
 }
 
 function enableSubmitWithEnter() {
@@ -169,9 +176,11 @@ function enableSubmitWithEnter() {
 
 let projectsNodes = document.getElementsByClassName("div-project");
 for (i of projectsNodes) {
-    let project_id = i.dataset.id;
-    i.addEventListener("click", function(e) {
-        e.stopPropagation();
-        window.location.href = ("/project.html?projectid=" + project_id);
-    });
+    i.addEventListener("click", forwarding);
+}
+
+function forwarding(e) {
+    e.stopPropagation();
+    let project_id = this.dataset.id;
+    window.location.href = ("/project.html?projectid=" + project_id);
 }
