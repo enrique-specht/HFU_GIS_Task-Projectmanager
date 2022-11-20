@@ -100,7 +100,7 @@ nav {
 .create-new {
     position: absolute;
     right: 1rem;
-    top: 4.4rem;
+    top: 5.5rem;
     background: var(--secondary-color);
     border: none;
     border-radius: 0.3em;
@@ -118,7 +118,7 @@ nav {
 
 .manage-text {
     color: var(--secondary-font-color);
-    margin: 0.5em 0.5em;
+    margin: 1em 0.5em;
     white-space: nowrap;
 }
 
@@ -433,6 +433,7 @@ nav {
     
     .manage-text {
         font-size: 1.7em;
+        margin: 0.5em 0.5em;
     }
     .create-new {
         top: 8.5em;

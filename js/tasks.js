@@ -22,6 +22,7 @@ const defaultTasks = [
 document.onload = onload();
 function onload() {
     renderLocalStorage();
+    setProjectTitleInManage();
 }
 
 function getProjectId() {
@@ -41,6 +42,13 @@ function renderLocalStorage() {
 
 function updateLocalStorage() {
     localStorage.setItem("project" + getProjectId(), JSON.stringify(tasks));
+}
+
+function setProjectTitleInManage() {
+    const projects = JSON.parse(localStorage.getItem("projects"));
+    const project = projects.find(x => x.id == getProjectId());
+    
+    document.getElementById("manage").textContent = ("Manage " + project.title + ":");
 }
 
 function createTask() {
