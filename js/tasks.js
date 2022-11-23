@@ -22,7 +22,13 @@ const defaultTasks = [
 document.onload = onload();
 function onload() {
     renderLocalStorage();
-    setProjectTitleInManage();
+    if(getProjectId() != "nonProjectRelated") {
+        if(window.location.pathname == "/tasks.html") {
+            window.location.search = "?projectid=nonProjectRelated";
+        } else {
+            setProjectTitleInManage();
+        }
+    }
 }
 
 function getProjectId() {

@@ -10,12 +10,87 @@
     <link rel="stylesheet" href="css/styles.css" />
     <script src="js/headerFooter.js" defer></script>
     <script src="js/script.js" defer></script>
+    <script src="js/tasks.js" defer></script>
+    <!-- Drag and Drop HTML5 workaround on mobile -->
+    <script src="js/DragDropTouch.js" defer></script>
 </head>
 
 <body>
     
     <main id="main">
-        
+        <h1 class="manage-text">Manage your tasks:</h1>
+        <button type="button" id=create-new class="create-new">
+            <p>Create a new task</p>
+        </button>
+        <div class="div-projectlist">
+            <div id="backlog" class="div-task-wrap">
+                <div class="div-task-status">
+                    <h2>Backlog</h2>
+                </div>
+                <div class="div-tasklist"></div>
+            </div>
+            <div id="inProgress" class="div-task-wrap">
+                <div class="div-task-status">
+                    <h2>In Progress</h2>
+                </div>
+                <div class="div-tasklist"></div>
+            </div>
+            <div id="finished" class="div-task-wrap">
+                <div class="div-task-status">
+                    <h2>Finished</h2>
+                </div>
+                <div class="div-tasklist"></div>
+            </div>
+        </div>
+
+        <template id="popup-create-template">
+            <div id="popup-create" class="popup">
+                <div class="popup-div-headline">
+                    <h2 class="popup-headline">Create your task</h2>
+                </div>
+                <div class="popup-div-form">
+                    <form>
+                        <label class="input-label">Title</label><br>
+                        <input id="task-title" class="form-item" type="text" maxlength="30" autocomplete="off" required><br>
+                        <label class="input-label">Due Date</label><br>
+                        <input id="task-duedate" class="form-item" type="date"><br>
+                        <input id="task-duedate-check" class="form-duedate-check" type="checkbox">
+                        <p class="form-duedate-text">Use due date</p><br>
+                        <button type="button" id="task-save" class="form-button">Save</button>
+                    </form>
+                </div>
+            </div>
+        </template>
+
+        <template id="popup-edit-template">
+            <div id="popup-edit" class="popup">
+                <div class="popup-div-headline">
+                    <h2 class="popup-headline">Edit your task</h2>
+                </div>
+                <div class="popup-div-form">
+                    <form>
+                        <label class="input-label">Title</label><br>
+                        <input id="task-title" class="form-item" type="text" maxlength="30" autocomplete="off" required><br>
+                        <label class="input-label">Due Date</label><br>
+                        <input id="task-duedate" class="form-item" type="date"><br>
+                        <button type="button" id="task-save" class="form-button">Save</button>
+                        <button type="button" id="task-delete" class="form-button-delete"><svg alt="Delete" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M19 24h-14c-1.104 0-2-.896-2-2v-16h18v16c0 1.104-.896 2-2 2m-9-14c0-.552-.448-1-1-1s-1 .448-1 1v9c0 .552.448 1 1 1s1-.448 1-1v-9zm6 0c0-.552-.448-1-1-1s-1 .448-1 1v9c0 .552.448 1 1 1s1-.448 1-1v-9zm6-5h-20v-2h6v-1.5c0-.827.673-1.5 1.5-1.5h5c.825 0 1.5.671 1.5 1.5v1.5h6v2zm-12-2h4v-1h-4v1z" /></svg></button>
+                    </form>
+                </div>
+            </div>
+        </template>
+
+        <template id="task-template">
+            <div class="task-item" draggable="true">
+                <div class="task-content">
+                    <p class="task-text"></p>
+                    <p class="task-duedate"></p>
+                </div>
+                <div class="task-edit-div">
+                    <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M4 .755l14.374 11.245-14.374 11.219.619.781 15.381-12-15.391-12-.609.755z"/></svg>
+                </div>
+            </div>
+        </template>
     </main>
     
 </body>
