@@ -182,5 +182,5 @@ for (i of projectsNodes) {
 function forwarding(e) {
     e.stopPropagation();
     let project = projects.find(x => x.id == this.dataset.id);
-    window.location.href = ("/project.html?projectid="  + project.id);
+    window.location.href = ('./project.html?projectid='  + project.id);
 }
