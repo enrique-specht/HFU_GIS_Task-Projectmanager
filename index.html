@@ -1,7 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="refresh" content="0; url=/Frontend/projects.html">
+    <script>
+        let pathname = window.location.pathname;
+        let paths = pathname.split(/[\\\/]/);
+
+        let url_location = "" + window.location.origin;
+        for(i = 0; i < paths.length-1; i++) {
+            url_location += paths[i];
+        }
+        url_location += "/Frontend/projects.html";
+        
+        window.location = url_location;
+    </script>
 </head>
 <body>
     <a href="/Frontend/projects.html">Click if your stuck here!</a>
