@@ -45,6 +45,46 @@ function updateLocalStorage(id) {
     }
 }
 
+async function getProject(id) {
+    return fetch(`http://localhost:5000/getProject?projectid=${id}`, {
+    	method: "GET"
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+        return data;
+    })
+}
+
+async function getProjects() {
+    return fetch('http://localhost:5000/getProjects', {
+    	method: "GET"
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+        return data;
+    })
+}
+
+async function addProject(project) {
+    fetch('http://localhost:5000/addProject', {
+        method: 'POST',
+        body: JSON.stringify(project),
+    })
+}
+
+async function updateProject(project) {
+    fetch('http://localhost:5000/updateProject', {
+        method: 'PUT',
+        body: JSON.stringify(project),
+    })
+}
+
+async function removeProject(id) {
+    fetch(`http://localhost:5000/removeProject?projectid=${id}`);
+}
+
 function createProject() {
     let project_title = document.getElementById("project-title").value;
     let project_description = document.getElementById("project-description").value;

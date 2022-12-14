@@ -31,6 +31,26 @@ function onload() {
     }
 }
 
+async function setTasks(tasks) {
+    let id = getProjectId();
+    fetch(`http://localhost:5000/setTasks?projectid=${id}`, {
+        method: 'POST',
+        body: JSON.stringify(tasks),
+    })
+}
+
+async function getTasks() {
+    let id = getProjectId();
+    return fetch(`http://localhost:5000/getTasks?projectid=${id}`, {
+    	method: "GET"
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+        return data;
+    })
+}
+
 function getProjectId() {
     const urlParams = new URLSearchParams(window.location.search);
     const projectId = urlParams.get("projectid");
