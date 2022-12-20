@@ -61,9 +61,15 @@ function getProjectId() {
 
 async function render() {
     try {
+        document.getElementsByClassName("div-projectlist")[0].style.display = "none";
+        document.getElementById("content-loading").style.display = "flex";
         tasks = await getTasks();
+        document.getElementById("content-loading").style.display = "none";
+        document.getElementsByClassName("div-projectlist")[0].style.display = "flex";
         //saveToLocalStorage();
     } catch {
+        document.getElementById("content-loading").style.display = "none";
+        document.getElementsByClassName("div-projectlist")[0].style.display = "flex";
         db = "offline";
         const project = JSON.parse(localStorage.getItem(getProjectId()));
         if(project.tasks.length != 0) {

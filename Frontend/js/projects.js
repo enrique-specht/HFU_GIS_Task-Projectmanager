@@ -28,9 +28,12 @@ function onload() {
 
 async function render() {
     try {
+        document.getElementById("content-loading").style.display = "flex";
         projects = await getProjects();
+        document.getElementById("content-loading").style.display = "none";
         //saveToLocalStorage();
     } catch {
+        document.getElementById("content-loading").style.display = "none";
         db = "offline";
         let p = new Array();
         for(i = 0; i < localStorage.length; i++) {
