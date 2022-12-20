@@ -4,14 +4,14 @@ class Project {
         this.title = title;
         this.description = description;
         this.id = Math.random()*Date.now();
-        this.tasks = null;
+        this.tasks = new Array();
   }
 }
 
 //for testing
 const defaultProjects = [
     new Project("Project1","Test"),
-    new Project("Project2"),
+    //new Project("Project2"),
 ];
 //
 

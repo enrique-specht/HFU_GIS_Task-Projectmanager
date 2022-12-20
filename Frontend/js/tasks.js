@@ -8,14 +8,16 @@ class Task {
   }
 }
 
+let db = "online";
+
 let tasks = new Array();
 
 //for testing
 const defaultTasks = [
     new Task("Beispiel", "2022-11-3"),
-    new Task("Beispiel2", "2022-11-3", "backlog"),
-    new Task("Beispiel3", "", "inProgress"),
-    new Task("Beispiel4", "2022-11-16", "finished")
+    //new Task("Beispiel2", "2022-11-3", "backlog"),
+    //new Task("Beispiel3", "", "inProgress"),
+    //new Task("Beispiel4", "2022-11-16", "finished")
 ];
 //
 
@@ -57,22 +59,29 @@ function getProjectId() {
     return projectId;
 }
 
-function render() {
-    const project = JSON.parse(localStorage.getItem(getProjectId()));
-    console.log(project);
-    if(project.tasks) {
-        tasks = project.tasks;
-    } else {
-        tasks = defaultTasks;
-        save();
+async function render() {
+    try {
+        tasks = await getTasks();
+        //saveToLocalStorage();
+    } catch {
+        db = "offline";
+        const project = JSON.parse(localStorage.getItem(getProjectId()));
+        if(project.tasks.length != 0) {
+            tasks = project.tasks;
+        } else {
+            tasks = defaultTasks;
+            saveToLocalStorage();
+        }
     }
     
-    tasks.forEach((e) => {
-        renderTask(e);
-    })
+    if(tasks != null) {
+        tasks.forEach((e) => {
+            renderTask(e);
+        })
+    }
 }
 
-function save() {
+function saveToLocalStorage() {
     const project = JSON.parse(localStorage.getItem(getProjectId()));
     project.tasks = tasks;
 
@@ -102,7 +111,11 @@ function createTask() {
     let task = new Task(task_title, task_duedate);
     tasks.push(task);
     renderTask(task);
-    save();
+    if(db != "offline") {
+        setTasks(tasks);
+    } else {
+        saveToLocalStorage();
+    }
 }
 
 function editTask() {
@@ -116,7 +129,11 @@ function editTask() {
     task.duedate = task_duedate;
 
     renderTask(task);
-    save();
+    if(db != "offline") {
+        setTasks(tasks);
+    } else {
+        saveToLocalStorage();
+    }
 }
 
 function renderTask(task) {
@@ -221,7 +238,11 @@ function deleteTask() {
     taskNode.remove();
     popup_edit.remove();
 
-    save();
+    if(db != "offline") {
+        setTasks(tasks);
+    } else {
+        saveToLocalStorage();
+    }
 }
 
 function enableSubmitWithEnter() {
@@ -293,7 +314,11 @@ status_stages.forEach((status) => {
         let position = this.parentNode.id;
         task.status = position;
 
-        save();
+        if(db != "offline") {
+            setTasks(tasks);
+        } else {
+            saveToLocalStorage();
+        }
         //console.log("dragDrop");
     });
 });

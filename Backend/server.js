@@ -74,16 +74,16 @@ const server = http.createServer((request, response) => {
                 }
             }
             break;
-            case '/getTasks':
-                if(id) {
-                    try {
-                        let project = projectList.getProject(id);
-                        response.write(JSON.stringify(project.tasks));
-                    } catch {
-                        break;
-                    }
+        case '/getTasks':
+            if(id) {
+                try {
+                    let project = projectList.getProject(id);
+                    response.write(JSON.stringify(project.tasks));
+                } catch {
+                    break;
                 }
-                break;
+            }
+            break;
         default:
             response.statusCode = 404;
     }

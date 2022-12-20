@@ -4,26 +4,17 @@ class Project {
         this.title = title;
         this.description = description;
         this.id = Math.random()*Date.now();
-        this.tasks = null;
+        this.tasks = new Array();
   }
 }
+
+let db = "online";
 
 let projects = new Array();
 
 //for testing
 const defaultProjects = [
-    {
-        title: "Beispiel",
-        description: "Test",
-        id: Math.random()*Date.now(),
-        tasks: null
-    },
-    {
-        title: "Beispiel2",
-        description: "",
-        id: Math.random()*Date.now(),
-        tasks: null
-    },
+    new Project("Project1","Test"),
 ];
 //
 
@@ -35,20 +26,26 @@ function onload() {
     }
 }
 
-function render() {
-    let p = new Array();
-    for(i = 0; i < localStorage.length; i++) {
-        let key = localStorage.key(i);
-        if(key != "nonProjectRelated") {
-            let project = JSON.parse(localStorage.getItem(key));
-            p.push(project);
+async function render() {
+    try {
+        projects = await getProjects();
+        //saveToLocalStorage();
+    } catch {
+        db = "offline";
+        let p = new Array();
+        for(i = 0; i < localStorage.length; i++) {
+            let key = localStorage.key(i);
+            if(key != "nonProjectRelated") {
+                let project = JSON.parse(localStorage.getItem(key));
+                p.push(project);
+            }
         }
-    }
-    if (p.length <= 0) {
-        projects = defaultProjects;
-        save();
-    } else {
-        projects = p
+        if (p.length <= 0) {
+            projects = defaultProjects;
+            saveToLocalStorage();
+        } else {
+            projects = p
+        }
     }
     
     projects.forEach((e) => {
@@ -56,7 +53,7 @@ function render() {
     })
 }
 
-function save(id) {
+function saveToLocalStorage(id) {
     for(i = 0; i<projects.length; i++) {
         localStorage.setItem(projects[i].id, JSON.stringify(projects[i]));
     }
@@ -121,8 +118,12 @@ function createProject() {
     }
 
     projects.push(project);
+    if(db != "offline") {
+        addProject(project);
+    } else {
+        saveToLocalStorage();
+    }
     renderProject(project);
-    save();
 }
 
 function editProject() {
@@ -136,7 +137,11 @@ function editProject() {
     project.description = project_description;
 
     renderProject(project);
-    save();
+    if(db != "offline") {
+        updateProject(project);
+    } else {
+        saveToLocalStorage();
+    }
 }
 
 function renderProject(project) {
@@ -214,7 +219,11 @@ function deleteProject() {
     projectNode.remove();
     popup_edit.remove();
 
-    save(projectNodeId);
+    if(db != "offline") {
+        removeProject(projectNodeId);
+    }  else {
+        saveToLocalStorage(projectNodeId);
+    }
 }
 
 function enableSubmitWithEnter() {
