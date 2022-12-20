@@ -21,7 +21,7 @@ const defaultTasks = [
 
 document.onload = onload();
 function onload() {
-    renderLocalStorage();
+    render();
     if(getProjectId() != "nonProjectRelated") {
         if(window.location.pathname == "/tasks.html") {
             window.location.search = "?projectid=nonProjectRelated";
@@ -57,24 +57,33 @@ function getProjectId() {
     return projectId;
 }
 
-function renderLocalStorage() {
-    //Todo: Load Local Storage
-    tasks = JSON.parse(localStorage.getItem("project"+getProjectId())) || defaultTasks;
+function render() {
+    const project = JSON.parse(localStorage.getItem(getProjectId()));
+    console.log(project);
+    if(project.tasks) {
+        tasks = project.tasks;
+    } else {
+        tasks = defaultTasks;
+        save();
+    }
     
     tasks.forEach((e) => {
         renderTask(e);
     })
 }
 
-function updateLocalStorage() {
-    localStorage.setItem("project" + getProjectId(), JSON.stringify(tasks));
+function save() {
+    const project = JSON.parse(localStorage.getItem(getProjectId()));
+    project.tasks = tasks;
+
+    localStorage.setItem(getProjectId(), JSON.stringify(project));
 }
 
 function setProjectTitleInManage() {
-    const projects = JSON.parse(localStorage.getItem("projects"));
-    const project = projects.find(x => x.id == getProjectId());
-    
-    document.getElementById("manage").textContent = ("Manage " + project.title + ":");
+    const project = JSON.parse(localStorage.getItem(getProjectId()));
+    if(project) {
+        document.getElementById("manage").textContent = ("Manage " + project.title + ":");
+    }
 }
 
 function createTask() {
@@ -93,7 +102,7 @@ function createTask() {
     let task = new Task(task_title, task_duedate);
     tasks.push(task);
     renderTask(task);
-    updateLocalStorage();
+    save();
 }
 
 function editTask() {
@@ -107,7 +116,7 @@ function editTask() {
     task.duedate = task_duedate;
 
     renderTask(task);
-    updateLocalStorage();
+    save();
 }
 
 function renderTask(task) {
@@ -212,7 +221,7 @@ function deleteTask() {
     taskNode.remove();
     popup_edit.remove();
 
-    updateLocalStorage();
+    save();
 }
 
 function enableSubmitWithEnter() {
@@ -284,7 +293,7 @@ status_stages.forEach((status) => {
         let position = this.parentNode.id;
         task.status = position;
 
-        updateLocalStorage();
+        save();
         //console.log("dragDrop");
     });
 });

@@ -4,44 +4,64 @@ class Project {
         this.title = title;
         this.description = description;
         this.id = Math.random()*Date.now();
+        this.tasks = null;
   }
 }
 
 let projects = new Array();
 
 //for testing
-const defaultProject = [
+const defaultProjects = [
     {
         title: "Beispiel",
         description: "Test",
-        id: 1
+        id: Math.random()*Date.now(),
+        tasks: null
     },
     {
         title: "Beispiel2",
         description: "",
-        id: 2
+        id: Math.random()*Date.now(),
+        tasks: null
     },
 ];
 //
 
 document.onload = onload();
 function onload() {
-    renderLocalStorage();
+    render();
+    if(localStorage.getItem("nonProjectRelated") == null) {
+        localStorage.setItem("nonProjectRelated", JSON.stringify(new Project()));
+    }
 }
 
-function renderLocalStorage() {
-    projects = JSON.parse(localStorage.getItem("projects")) || defaultProject;
+function render() {
+    let p = new Array();
+    for(i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if(key != "nonProjectRelated") {
+            let project = JSON.parse(localStorage.getItem(key));
+            p.push(project);
+        }
+    }
+    if (p.length <= 0) {
+        projects = defaultProjects;
+        save();
+    } else {
+        projects = p
+    }
     
     projects.forEach((e) => {
         renderProject(e);
     })
 }
 
-function updateLocalStorage(id) {
-    localStorage.setItem("projects", JSON.stringify(projects));
-
+function save(id) {
+    for(i = 0; i<projects.length; i++) {
+        localStorage.setItem(projects[i].id, JSON.stringify(projects[i]));
+    }
     if(id) {
-        localStorage.removeItem("project"+id);
+        localStorage.removeItem(id);
     }
 }
 
@@ -102,7 +122,7 @@ function createProject() {
 
     projects.push(project);
     renderProject(project);
-    updateLocalStorage();
+    save();
 }
 
 function editProject() {
@@ -116,7 +136,7 @@ function editProject() {
     project.description = project_description;
 
     renderProject(project);
-    updateLocalStorage();
+    save();
 }
 
 function renderProject(project) {
@@ -194,7 +214,7 @@ function deleteProject() {
     projectNode.remove();
     popup_edit.remove();
 
-    updateLocalStorage(projectNodeId);
+    save(projectNodeId);
 }
 
 function enableSubmitWithEnter() {
