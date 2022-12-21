@@ -39,7 +39,6 @@ body {
 
 header {
     background-color: var(--primary-color);
-    height: 4rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -403,7 +402,6 @@ nav {
 .div-content-loading {
     position: absolute;
     top: 0;
-    
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
