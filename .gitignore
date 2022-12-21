@@ -1,0 +1,9 @@
+.vscode/
+Backend/MongoDB/
+Backend/startMongoDB.cmd
+Backend/startMongoDB.cmd.bak
+Backend/startNode.cmd
+Backend/startNode.cmd.bak
+Backend/node_modules/
+Backend/package-lock.json
+Backend/package.json

@@ -24,9 +24,9 @@ const defaultTasks = [
 document.onload = onload();
 function onload() {
     render();
-    if(getProjectId() != "nonProjectRelated") {
+    if(getProjectId() != 1) {
         if(window.location.pathname == "/tasks.html") {
-            window.location.search = "?projectid=nonProjectRelated";
+            window.location.search = "?projectid=1";
         } else {
             setProjectTitleInManage();
         }

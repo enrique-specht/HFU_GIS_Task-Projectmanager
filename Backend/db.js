@@ -1,18 +1,21 @@
+const mongodb = require('mongodb');
+
 class Project {
 
     constructor(title, description="") {
         this.title = title;
         this.description = description;
-        this.id = Math.random()*Date.now();
+        this._id = Math.random()*Date.now();
         this.tasks = new Array();
   }
 }
 
 const defaultProjects = [
+    //Project for Tasks Tab
     {
-        title: null,
+        title: "Tasks Tab",
         description: null,
-        id: "nonProjectRelated",
+        _id: 1,
         tasks: new Array()
     },
     new Project("Database Project Template","Description"),
@@ -23,32 +26,49 @@ class Projects {
         this.projects = defaultProjects;
     }
 
-    addProject(project){
-        if(!project || !project.id || !project.title){
+    async addProject(projectsCollection,project){
+        if(!project || !project._id || !project.title){
             console.warn("No valid project given!");
             return;
         }
-        this.projects[this.projects.length] = project;
+        //this.projects[this.projects.length] = project;
+        projectsCollection.insertOne(project);
     }
 
-    getProject(id){
-        return this.projects.filter(storedProject => storedProject.id == id)[0];
+    async getProjects(projectsCollection){
+        //return this.projects;
+        return await projectsCollection.find({}).toArray();
     }
 
-    updateProject(project){
-        if(!project || !project.id || !project.title){
+    async getProject(projectsCollection,id){
+        //return this.projects.filter(storedProject => storedProject.id == id)[0];
+        let project = await projectsCollection.find({
+            _id: Number(id),
+        }).toArray();
+        return project[0];
+    }
+
+    async updateProject(projectsCollection,project){
+        if(!project || !project._id || !project.title){
             console.warn("No valid project given!");
             return;
         }
-        const index = this.projects.findIndex(storedProject => storedProject.id == project.id);
-        this.projects[index] = project;
+        //const index = this.projects.findIndex(storedProject => storedProject.id == project.id);
+        //this.projects[index] = project;
+        projectsCollection.replaceOne({
+            _id: project._id,
+        },
+        project);
     }
 
-    deleteProject(id){
-        this.projects = this.projects.filter(project => project.id != id);
+    async deleteProject(projectsCollection,id){
+        //this.projects = this.projects.filter(project => project.id != id);
+        projectsCollection.deleteOne({
+            _id: Number(id),
+        });
     }
 }
 
 const projectList = new Projects();
 
-module.exports = projectList;
+module.exports = {projectList, defaultProjects};

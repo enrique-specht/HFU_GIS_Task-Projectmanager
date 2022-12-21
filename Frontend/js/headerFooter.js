@@ -23,7 +23,7 @@ let nav = document.createElement("nav");
 nav.id = "navbar";
 
 let title = ["Tasks", "Projects"];
-let href = ["./tasks.html?projectid=nonProjectRelated", "./projects.html"];
+let href = ["./tasks.html?projectid=1", "./projects.html"];
 
 for (i in title) {
     let navItem = document.createElement("a");

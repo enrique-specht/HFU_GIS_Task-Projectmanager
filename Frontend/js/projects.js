@@ -3,7 +3,7 @@ class Project {
     constructor(title, description="") {
         this.title = title;
         this.description = description;
-        this.id = Math.random()*Date.now();
+        this._id = Math.random()*Date.now();
         this.tasks = new Array();
   }
 }
@@ -31,17 +31,17 @@ async function render() {
         //saveToLocalStorage();
     } catch {
         document.getElementById("content-loading").style.display = "none";
-        
+
         db = "offline";
 
-        if(localStorage.getItem("nonProjectRelated") == null) {
-            localStorage.setItem("nonProjectRelated", JSON.stringify(new Project()));
+        if(localStorage.getItem(1) == null) {
+            localStorage.setItem(1, JSON.stringify(new Project()));
         }
 
         let p = new Array();
         for(i = 0; i < localStorage.length; i++) {
             let key = localStorage.key(i);
-            if(key != "nonProjectRelated") {
+            if(key != 1) {
                 let project = JSON.parse(localStorage.getItem(key));
                 p.push(project);
             }
@@ -55,14 +55,14 @@ async function render() {
     }
     
     projects.forEach((e) => {
-        if(e.id != "nonProjectRelated")
+        if(e._id != 1)
             renderProject(e);
     })
 }
 
 function saveToLocalStorage(id) {
     for(i = 0; i<projects.length; i++) {
-        localStorage.setItem(projects[i].id, JSON.stringify(projects[i]));
+        localStorage.setItem(projects[i]._id, JSON.stringify(projects[i]));
     }
     if(id) {
         localStorage.removeItem(id);
@@ -135,7 +135,7 @@ function createProject() {
 
 function editProject() {
     let projectNodeId = document.querySelector("[edit]").closest("div.div-project").dataset.id;
-    let project = projects.find(x => x.id == projectNodeId);
+    let project = projects.find(x => x._id == projectNodeId);
 
     let project_title = document.getElementById("project-title").value;
     let project_description = document.getElementById("project-description").value;
@@ -164,7 +164,7 @@ function renderProject(project) {
 
     projectNode.children[0].children[1].textContent = project.title;
     projectNode.children[1].textContent = project.description;
-    projectNode.dataset.id = project.id;
+    projectNode.dataset.id = project._id;
 
     projectNode.addEventListener("click", forwarding);
 
@@ -218,7 +218,7 @@ function editProjectPopup(event) {
 function deleteProject() {
     let projectNode = document.querySelector("[edit]").closest("div.div-project");
     let projectNodeId = projectNode.dataset.id;
-    let project = projects.find(x => x.id == projectNodeId);
+    let project = projects.find(x => x._id == projectNodeId);
     let popup_edit = document.getElementById("popup-edit");
 
     projects.splice(projects.indexOf(project), 1);
@@ -257,6 +257,6 @@ for (i of projectsNodes) {
 
 function forwarding(e) {
     e.stopPropagation();
-    let project = projects.find(x => x.id == this.dataset.id);
-    window.location.href = ('./project.html?projectid='  + project.id);
+    let project = projects.find(x => x._id == this.dataset.id);
+    window.location.href = ('./project.html?projectid='  + project._id);
 }
