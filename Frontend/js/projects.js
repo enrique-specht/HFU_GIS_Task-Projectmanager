@@ -14,16 +14,13 @@ let projects = new Array();
 
 //for testing
 const defaultProjects = [
-    new Project("Project1","Test"),
+    new Project("LocalStorage Project Template","Description"),
 ];
 //
 
 document.onload = onload();
 function onload() {
     render();
-    if(localStorage.getItem("nonProjectRelated") == null) {
-        localStorage.setItem("nonProjectRelated", JSON.stringify(new Project()));
-    }
 }
 
 async function render() {
@@ -34,7 +31,13 @@ async function render() {
         //saveToLocalStorage();
     } catch {
         document.getElementById("content-loading").style.display = "none";
+        
         db = "offline";
+
+        if(localStorage.getItem("nonProjectRelated") == null) {
+            localStorage.setItem("nonProjectRelated", JSON.stringify(new Project()));
+        }
+
         let p = new Array();
         for(i = 0; i < localStorage.length; i++) {
             let key = localStorage.key(i);
@@ -52,7 +55,8 @@ async function render() {
     }
     
     projects.forEach((e) => {
-        renderProject(e);
+        if(e.id != "nonProjectRelated")
+            renderProject(e);
     })
 }
 

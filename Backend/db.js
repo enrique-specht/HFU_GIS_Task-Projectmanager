@@ -8,12 +8,15 @@ class Project {
   }
 }
 
-//for testing
 const defaultProjects = [
-    new Project("Project1","Test"),
-    //new Project("Project2"),
+    {
+        title: null,
+        description: null,
+        id: "nonProjectRelated",
+        tasks: new Array()
+    },
+    new Project("Database Project Template","Description"),
 ];
-//
 
 class Projects {
     constructor(){
