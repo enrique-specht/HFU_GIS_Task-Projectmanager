@@ -1,5 +1,5 @@
 const http = require('http');
-const {projectList, defaultProjects} = require('./db.js');
+const {projectList, defaultProjectTasksTab} = require('./db.js');
 const mongodb = require('mongodb');
 
 const url = 'mongodb://localhost:27017';
@@ -17,7 +17,7 @@ async function startServer() {
         _id: 1,
     }).toArray();
     if(defaultCollection.length == 0) {
-        mongoClient.db('projectmanager').collection('projects').insertMany(defaultProjects);
+        mongoClient.db('projectmanager').collection('projects').insertOne(defaultProjectTasksTab);
     }
 
     server.listen(port, hostname, () => {
@@ -55,6 +55,7 @@ const server = http.createServer(async (request, response) => {
                 });
                 request.on('end', () => {
                     projectList.addProject(projectsCollection,JSON.parse(jsonString));
+                    updateLastUpdated();
                 });
             }
             break;
@@ -66,6 +67,7 @@ const server = http.createServer(async (request, response) => {
                 });
                 request.on('end', () => {
                     projectList.updateProject(projectsCollection,JSON.parse(jsonString));
+                    updateLastUpdated();
                 });
             }
             break;
@@ -73,6 +75,7 @@ const server = http.createServer(async (request, response) => {
             if(id){
                 try {
                     projectList.deleteProject(projectsCollection,id);
+                    updateLastUpdated();
                 } catch {
                     break;
                 }
@@ -90,6 +93,7 @@ const server = http.createServer(async (request, response) => {
                             let project = await projectList.getProject(projectsCollection,id);
                             project.tasks = JSON.parse(jsonString);
                             projectList.updateProject(projectsCollection,project);
+                            updateLastUpdated();
                         });
                     }
                 } catch {
@@ -101,17 +105,45 @@ const server = http.createServer(async (request, response) => {
             if(id) {
                 try {
                     let project = await projectList.getProject(projectsCollection,id);
-                    console.log(project);
                     response.write(JSON.stringify(project.tasks));
                 } catch {
                     break;
                 }
             }
             break;
+        case '/getLastUpdated':
+            let dateObject = await mongoClient.db('projectmanager').collection('lastUpdated').find({
+                _id: 0,
+            }).toArray();
+
+            let lastUpdated = dateObject[0].date;
+
+            response.write(JSON.stringify(lastUpdated));
+            break;
         default:
             response.statusCode = 404;
     }
     response.end();
-    });
+});
+
+async function updateLastUpdated() {
+    let date = {
+        _id: 0,
+        date: Date.now()
+    }
+
+    let existsDate = await mongoClient.db('projectmanager').collection('lastUpdated').find({
+        _id: 0,
+    }).toArray();
+
+    if(existsDate.length == 0) {
+        mongoClient.db('projectmanager').collection('lastUpdated').insertOne(date);
+    } else {
+        mongoClient.db('projectmanager').collection('lastUpdated').replaceOne({
+            _id: 0,
+        },
+        date);
+    }
+}
   
 startServer();

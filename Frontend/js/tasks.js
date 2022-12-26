@@ -14,7 +14,7 @@ let tasks = new Array();
 
 //for testing
 const defaultTasks = [
-    new Task("Beispiel", "2022-11-3"),
+    //new Task("Beispiel", "2022-11-3"),
     //new Task("Beispiel2", "2022-11-3", "backlog"),
     //new Task("Beispiel3", "", "inProgress"),
     //new Task("Beispiel4", "2022-11-16", "finished")
@@ -53,6 +53,17 @@ async function getTasks() {
     })
 }
 
+async function getDatabaseLastUpdated() {
+    return fetch(`http://localhost:5000/getLastUpdated`, {
+    	method: "GET"
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+        return data;
+    })
+}
+
 function getProjectId() {
     const urlParams = new URLSearchParams(window.location.search);
     const projectId = urlParams.get("projectid");
@@ -63,14 +74,46 @@ async function render() {
     try {
         document.getElementsByClassName("div-projectlist")[0].style.display = "none";
         document.getElementById("content-loading").style.display = "flex";
-        tasks = await getTasks();
-        document.getElementById("content-loading").style.display = "none";
-        document.getElementsByClassName("div-projectlist")[0].style.display = "flex";
-        //saveToLocalStorage();
+
+        let databaseLastUpdated = await getDatabaseLastUpdated();
+        let localStorageLastUpdated = localStorage.getItem("lastUpdated");
+
+        if(localStorageLastUpdated > databaseLastUpdated) {
+
+            await synchronisation();
+            
+            setTimeout(async function(){
+                tasks = await getTasks();
+
+                if(tasks != null) {
+                    tasks.forEach((e) => {
+                        renderTask(e);
+                    })
+                }
+
+                document.getElementById("content-loading").style.display = "none";
+                document.getElementsByClassName("div-projectlist")[0].style.display = "flex";
+            }, 1000);
+
+        } else {
+            tasks = await getTasks();
+
+            if(tasks != null) {
+                tasks.forEach((e) => {
+                    renderTask(e);
+                })
+            }
+
+            document.getElementById("content-loading").style.display = "none";
+            document.getElementsByClassName("div-projectlist")[0].style.display = "flex";
+        }
+
     } catch {
         document.getElementById("content-loading").style.display = "none";
         document.getElementsByClassName("div-projectlist")[0].style.display = "flex";
+
         db = "offline";
+
         const project = JSON.parse(localStorage.getItem(getProjectId()));
         if(project.tasks.length != 0) {
             tasks = project.tasks;
@@ -78,13 +121,22 @@ async function render() {
             tasks = defaultTasks;
             saveToLocalStorage();
         }
+
+        if(tasks != null) {
+            tasks.forEach((e) => {
+                renderTask(e);
+            })
+        }
     }
-    
-    if(tasks != null) {
-        tasks.forEach((e) => {
-            renderTask(e);
-        })
-    }
+}
+
+async function synchronisation() {
+    const project = JSON.parse(localStorage.getItem(getProjectId()));
+    console.log(project.tasks);
+
+    let tasksList = project.tasks;
+
+    setTasks(tasksList);
 }
 
 function saveToLocalStorage() {
@@ -92,6 +144,7 @@ function saveToLocalStorage() {
     project.tasks = tasks;
 
     localStorage.setItem(getProjectId(), JSON.stringify(project));
+    localStorage.setItem("lastUpdated", JSON.stringify(Date.now()));
 }
 
 function setProjectTitleInManage() {
@@ -118,6 +171,7 @@ function createTask() {
     tasks.push(task);
     renderTask(task);
     if(db != "offline") {
+        saveToLocalStorage();
         setTasks(tasks);
     } else {
         saveToLocalStorage();
@@ -136,6 +190,7 @@ function editTask() {
 
     renderTask(task);
     if(db != "offline") {
+        saveToLocalStorage();
         setTasks(tasks);
     } else {
         saveToLocalStorage();
@@ -245,6 +300,7 @@ function deleteTask() {
     popup_edit.remove();
 
     if(db != "offline") {
+        saveToLocalStorage();
         setTasks(tasks);
     } else {
         saveToLocalStorage();
@@ -321,6 +377,7 @@ status_stages.forEach((status) => {
         task.status = position;
 
         if(db != "offline") {
+            saveToLocalStorage();
             setTasks(tasks);
         } else {
             saveToLocalStorage();

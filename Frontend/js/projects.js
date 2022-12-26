@@ -12,11 +12,14 @@ let db = "online";
 
 let projects = new Array();
 
-//for testing
-const defaultProjects = [
-    new Project("LocalStorage Project Template","Description"),
-];
-//
+const defaultProjectTasksTab =
+//Project for Tasks Tab
+{
+    title: "Tasks Tab",
+    description: null,
+    _id: 1,
+    tasks: new Array()
+};
 
 document.onload = onload();
 function onload() {
@@ -24,40 +27,109 @@ function onload() {
 }
 
 async function render() {
+    if(localStorage.getItem(1) == null) {
+        localStorage.setItem(1, JSON.stringify(defaultProjectTasksTab));
+    }
+
     try {
         document.getElementById("content-loading").style.display = "flex";
-        projects = await getProjects();
-        document.getElementById("content-loading").style.display = "none";
-        //saveToLocalStorage();
+
+        let databaseLastUpdated = await getDatabaseLastUpdated();
+        let localStorageLastUpdated = localStorage.getItem("lastUpdated");
+
+        if(localStorageLastUpdated > databaseLastUpdated) {
+
+            await synchronisation();
+            
+            setTimeout(async function(){
+                projects = await getProjects();
+
+                projects.forEach((e) => {
+                    if(e._id != 1)
+                        renderProject(e);
+                })
+
+                document.getElementById("content-loading").style.display = "none";
+            }, 1000);
+
+        } else {
+            projects = await getProjects();
+
+            projects.forEach((e) => {
+                if(e._id != 1)
+                    renderProject(e);
+            })
+
+            document.getElementById("content-loading").style.display = "none";
+        }
+
     } catch {
         document.getElementById("content-loading").style.display = "none";
 
         db = "offline";
 
-        if(localStorage.getItem(1) == null) {
-            localStorage.setItem(1, JSON.stringify(new Project()));
-        }
-
         let p = new Array();
         for(i = 0; i < localStorage.length; i++) {
             let key = localStorage.key(i);
-            if(key != 1) {
+            if(key != 1 && key != "lastUpdated") {
                 let project = JSON.parse(localStorage.getItem(key));
                 p.push(project);
             }
         }
         if (p.length <= 0) {
-            projects = defaultProjects;
+            projects = [defaultProjectTasksTab];
             saveToLocalStorage();
         } else {
-            projects = p
+            projects = p;
+        }
+
+        projects.forEach((e) => {
+            if(e._id != 1)
+                renderProject(e);
+        })
+    }
+}
+
+async function synchronisation() {
+    projects = await getProjects();
+
+    for(i = 0; i < projects.length; i++) {
+        let projectExists = "false";
+
+        for(j = 0; j < localStorage.length; j++) {
+            let key = localStorage.key(j);
+            if(key == projects[i]._id) {
+                projectExists = "true";
+            }
+        }
+
+        if(projectExists != "true") {
+            removeProject(projects[i]._id);
+        }
+
+    }
+
+    for(j = 0; j < localStorage.length; j++) {
+
+        let key = localStorage.key(j);
+        if(key != "lastUpdated") {
+            let projectExists = "false";
+
+            for(i = 0; i < projects.length; i++) {
+                if(key == projects[i]._id) {
+                    projectExists = "true";
+                    let project = JSON.parse(localStorage.getItem(key));
+                    updateProject(project);
+                }
+            }
+
+            if(projectExists != "true") {
+                let project = JSON.parse(localStorage.getItem(key));
+                addProject(project);
+            }
+            
         }
     }
-    
-    projects.forEach((e) => {
-        if(e._id != 1)
-            renderProject(e);
-    })
 }
 
 function saveToLocalStorage(id) {
@@ -67,6 +139,17 @@ function saveToLocalStorage(id) {
     if(id) {
         localStorage.removeItem(id);
     }
+    localStorage.setItem("lastUpdated", JSON.stringify(Date.now()));
+}
+
+async function getDatabaseLastUpdated() {
+    return fetch(`http://localhost:5000/getLastUpdated`, {
+    	method: "GET"
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        return data;
+    })
 }
 
 async function getProject(id) {
@@ -126,6 +209,7 @@ function createProject() {
 
     projects.push(project);
     if(db != "offline") {
+        saveToLocalStorage();
         addProject(project);
     } else {
         saveToLocalStorage();
@@ -145,6 +229,7 @@ function editProject() {
 
     renderProject(project);
     if(db != "offline") {
+        saveToLocalStorage();
         updateProject(project);
     } else {
         saveToLocalStorage();
@@ -227,6 +312,7 @@ function deleteProject() {
     popup_edit.remove();
 
     if(db != "offline") {
+        saveToLocalStorage(projectNodeId);
         removeProject(projectNodeId);
     }  else {
         saveToLocalStorage(projectNodeId);

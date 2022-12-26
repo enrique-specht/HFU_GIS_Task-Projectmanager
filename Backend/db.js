@@ -10,20 +10,18 @@ class Project {
   }
 }
 
-const defaultProjects = [
-    //Project for Tasks Tab
-    {
-        title: "Tasks Tab",
-        description: null,
-        _id: 1,
-        tasks: new Array()
-    },
-    new Project("Database Project Template","Description"),
-];
+const defaultProjectTasksTab =
+//Project for Tasks Tab
+{
+    title: "Tasks Tab",
+    description: null,
+    _id: 1,
+    tasks: new Array()
+};
 
 class Projects {
     constructor(){
-        this.projects = defaultProjects;
+        this.projects = defaultProjectTasksTab;
     }
 
     async addProject(projectsCollection,project){
@@ -71,4 +69,4 @@ class Projects {
 
 const projectList = new Projects();
 
-module.exports = {projectList, defaultProjects};
+module.exports = {projectList, defaultProjectTasksTab};
