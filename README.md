@@ -1,6 +1,6 @@
-# HFU GIS Task-/Projektmanager
+# HFU GIS Task-/Projectmanager
 Grundlagen Interaktiver Systeme
 
-Task-/Projektmanager
+Task-/Projectmanager
 
 by Enrique Specht
